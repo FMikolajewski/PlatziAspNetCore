@@ -29,7 +29,7 @@ namespace platzi_asp_net_core.Controllers
             ViewBag.CosaDinamica = "La Monja";
             ViewBag.Fecha = DateTime.Now;
 
-            return View("MultiAlumno", _context.Cursos);
+            return View("MultiCurso", _context.Cursos);
         }
 
         public IActionResult Create()
