@@ -57,7 +57,31 @@ namespace platzi_asp_net_core.Controllers
             {
                 return View(curso);
             }
+        }
+
+        public IActionResult Edit()
+        {
+            ViewBag.Fecha = DateTime.Now;
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Edit(string id)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                var curso = from cur in _context.Cursos
+                            where cur.Id == id
+                            select cur;
+
+                return View(curso.SingleOrDefault());
+            }
             
+            else
+            {
+                return View("MultiCurso", _context.Cursos);
+            }
         }
 
         private EscuelaContext _context;
