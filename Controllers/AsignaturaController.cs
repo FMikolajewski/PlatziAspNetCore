@@ -9,13 +9,13 @@ namespace platzi_asp_net_core.Controllers
     public class AsignaturaController : Controller
     {
         [Route("Asignatura/Index")]
-        [Route("Asignatura/Index/{asignaturaId}")]
-        public IActionResult Index(string asignaturaId)
+        [Route("Asignatura/Index/{id}")]
+        public IActionResult Index(string id)
         {
-            if(!string.IsNullOrWhiteSpace(asignaturaId))
+            if(!string.IsNullOrWhiteSpace(id))
             {
                         var asignatura = from asig in _context.Asignaturas
-                                        where asig.Id == asignaturaId
+                                        where asig.Id == id
                                         select asig;
 
                         return View(asignatura.SingleOrDefault());

@@ -16,7 +16,9 @@
     <tr>
       <td>@obj.Nombre</td>
       <td>@obj.Id</td>
-      <td>@Html.ActionLink("Editar", "Edit", new { id=obj.Id }) / @Html.ActionLink("Borrar", "Delete", new { id=obj.Id })
+      <td>@Html.ActionLink("Ver", "Index", new { id=obj.Id }) /  
+          @Html.ActionLink("Editar", "Edit", new { id=obj.Id }) /
+          @Html.ActionLink("Borrar", "Delete", new { id=obj.Id })
       </td>
     </tr>
 }

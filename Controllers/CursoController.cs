@@ -15,11 +15,16 @@ namespace platzi_asp_net_core.Controllers
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
+                /*
                 var curso = from cur in _context.Cursos
                             where cur.Id == id
                             select cur;
-
                 return View(curso.SingleOrDefault());
+                */
+                
+                return View((from cur in _context.Cursos
+                                where cur.Id == id
+                                select cur).SingleOrDefault());
             }
             else
             {
