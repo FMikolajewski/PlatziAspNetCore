@@ -8,23 +8,16 @@ namespace platzi_asp_net_core.Controllers
 {
     public class CursoController : Controller
     {
-        
         [Route("Curso/Index")]
         [Route("Curso/Index/{id}")]
         public IActionResult Index(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
-                /*
                 var curso = from cur in _context.Cursos
                             where cur.Id == id
                             select cur;
-                return View(curso.SingleOrDefault());
-                */
-                
-                return View((from cur in _context.Cursos
-                                where cur.Id == id
-                                select cur).SingleOrDefault());
+                return View(curso.SingleOrDefault()); 
             }
             else
             {
