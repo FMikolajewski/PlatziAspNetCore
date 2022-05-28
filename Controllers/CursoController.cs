@@ -8,6 +8,9 @@ namespace platzi_asp_net_core.Controllers
 {
     public class CursoController : Controller
     {
+        
+        [Route("Curso/Index")]
+        [Route("Curso/Index/{id}")]
         public IActionResult Index(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -59,14 +62,8 @@ namespace platzi_asp_net_core.Controllers
             }
         }
 
-        public IActionResult Edit()
-        {
-            ViewBag.Fecha = DateTime.Now;
-
-            return View();
-        }
-
-        [HttpPost]
+        [Route("Curso/Edit")]
+        [Route("Curso/Edit/{id}")]
         public IActionResult Edit(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -77,7 +74,6 @@ namespace platzi_asp_net_core.Controllers
 
                 return View(curso.SingleOrDefault());
             }
-            
             else
             {
                 return View("MultiCurso", _context.Cursos);
