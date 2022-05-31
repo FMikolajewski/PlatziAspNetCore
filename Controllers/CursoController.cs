@@ -8,6 +8,7 @@ namespace platzi_asp_net_core.Controllers
 {
     public class CursoController : Controller
     {
+        #region Index
         [Route("Curso/Index")]
         [Route("Curso/Index/{id}")]
         public IActionResult Index(string id)
@@ -17,13 +18,17 @@ namespace platzi_asp_net_core.Controllers
                 var curso = from cur in _context.Cursos
                             where cur.Id == id
                             select cur;
-                return View(curso.SingleOrDefault()); 
+                return View(curso.SingleOrDefault());
             }
             else
             {
                 return View("MultiCurso", _context.Cursos);
             }
         }
+        #endregion
+
+        #region MultiCurso
+        [Route("Curso/Multicurso")]
 
         public IActionResult MultiCurso()
         {
@@ -32,7 +37,10 @@ namespace platzi_asp_net_core.Controllers
 
             return View("MultiCurso", _context.Cursos);
         }
-
+        #endregion
+        
+        #region Create
+        [Route("Curso/Create")]
         public IActionResult Create()
         {
             ViewBag.Fecha = DateTime.Now;
@@ -41,6 +49,7 @@ namespace platzi_asp_net_core.Controllers
         }
 
         [HttpPost]
+        [Route("Curso/Create")]
         public IActionResult Create(Curso curso)
         {
             ViewBag.Fecha = DateTime.Now;
@@ -51,7 +60,7 @@ namespace platzi_asp_net_core.Controllers
                 curso.EscuelaId = escuela.Id;
                 _context.Cursos.Add(curso);
                 _context.SaveChanges();
-                ViewBag.MensajeExra ="Curso Creado";
+                ViewBag.MensajeExra = "Curso Creado";
                 return View("Index", curso);
             }
             else
@@ -59,8 +68,9 @@ namespace platzi_asp_net_core.Controllers
                 return View(curso);
             }
         }
+        #endregion
 
-        [Route("Curso/Edit")]
+        #region Edit
         [Route("Curso/Edit/{id}")]
         public IActionResult Edit(string id)
         {
@@ -77,6 +87,7 @@ namespace platzi_asp_net_core.Controllers
                 return View("MultiCurso", _context.Cursos);
             }
         }
+        #endregion
 
         private EscuelaContext _context;
         public CursoController(EscuelaContext context)

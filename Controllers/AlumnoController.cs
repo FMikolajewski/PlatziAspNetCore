@@ -1,30 +1,36 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using platzi_asp_net_core.Models;
 
 namespace platzi_asp_net_core.Controllers
 {
     public class AlumnoController : Controller
     {
+
+        #region Index
         [Route("Alumno/Index")]
         [Route("Alumno/Index/{id}")]
         public IActionResult Index(string id)
         {
-            if(!string.IsNullOrWhiteSpace(id))
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                        var alumno = from alumn in _context.Alumnos
-                                        where alumn.Id == id
-                                        select alumn;
-
-                        return View(alumno.SingleOrDefault());
+                var alumno = from alumn in _context.Alumnos
+                             where alumn.Id == id
+                             select alumn;
+                return View(alumno.SingleOrDefault());
             }
             else
             {
-               return View("MultiAlumno", _context.Alumnos); 
+                return View("MultiAlumno", _context.Alumnos);
             }
         }
+        #endregion
 
+        #region Multialumno
+        [Route("Alumno/Multialumno")]
         public IActionResult MultiAlumno()
         {
             ViewBag.CosaDinamica = "La Monja";
@@ -32,10 +38,22 @@ namespace platzi_asp_net_core.Controllers
 
             return View("MultiAlumno", _context.Alumnos);
         }
+        #endregion
 
+        #region Create
+        [Route("Alumno/Create")]
         public IActionResult Create()
         {
             ViewBag.Fecha = DateTime.Now;
+
+            List<SelectListItem> listacursos = new List<SelectListItem>();
+
+            foreach (var curso in _context.Cursos)
+            {
+                listacursos.Add(new SelectListItem { Text = curso.Nombre, Value = curso.Id });
+            }
+
+            ViewBag.Cursos = _context.ListarCursos();
 
             return View();
         }
@@ -49,7 +67,7 @@ namespace platzi_asp_net_core.Controllers
                 var escuela = _context.Escuelas.FirstOrDefault();
                 _context.Alumnos.Add(alumno);
                 _context.SaveChanges();
-                ViewBag.MensajeExra ="Alumno Creado";
+                ViewBag.MensajeExra = "Alumno Creado";
                 return View("Index", alumno);
             }
             else
@@ -57,16 +75,17 @@ namespace platzi_asp_net_core.Controllers
                 return View(alumno);
             }
         }
+        #endregion
 
-        [Route("Alumno/Edit")]
+        #region Edit
         [Route("Alumno/Edit/{id}")]
         public IActionResult Edit(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
                 var alumno = from alumn in _context.Alumnos
-                            where alumn.Id == id
-                            select alumn;
+                             where alumn.Id == id
+                             select alumn;
 
                 return View(alumno.SingleOrDefault());
             }
@@ -75,11 +94,12 @@ namespace platzi_asp_net_core.Controllers
                 return View("MultiAlumno", _context.Alumnos);
             }
         }
-        
+        #endregion
+
         private EscuelaContext _context;
         public AlumnoController(EscuelaContext context)
         {
-           _context = context; 
+            _context = context;
         }
     }
 }
