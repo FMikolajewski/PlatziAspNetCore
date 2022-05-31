@@ -29,7 +29,7 @@ namespace platzi_asp_net_core.Controllers
         #endregion
         
         #region MultiAsignatura
-        [Route("Asignatura/Multiasignatura")]
+        [Route("Asignatura/MultiAsignatura")]
         public IActionResult MultiAsignatura()
         {
             ViewBag.CosaDinamica = "La Monja";

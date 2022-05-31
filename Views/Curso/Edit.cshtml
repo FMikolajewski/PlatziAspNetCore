@@ -20,7 +20,8 @@
     <div>
         <label asp-for="Jornada"></label>
         @Html.DropDownList(
-            "Jornada", Html.GetEnumSelectList<TiposJornada>(),
+            "Jornada",
+            Html.GetEnumSelectList<TiposJornada>(),
             "Seleccione una jornada",
             new {@class = "form-control"}
         )

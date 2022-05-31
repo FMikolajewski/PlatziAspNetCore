@@ -1,113 +1,176 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using platzi_asp_net_core.Models;
+using System;
+using System.Linq;
 
 namespace platzi_asp_net_core.Controllers
 {
     public class CursoController : Controller
     {
-        #region Index
+
+        #region Variables
+        private EscuelaContext mescContexto;
+
+        #endregion
+
+        #region Constructores
+        public CursoController(EscuelaContext pContext)
+        {
+            this.mescContexto = pContext;
+        }
+
+        #endregion
+
+        #region Métodos públicos
+
+        #region Index (Details)
+
         [Route("Curso/Index")]
         [Route("Curso/Index/{id}")]
         public IActionResult Index(string id)
         {
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                var curso = from cur in _context.Cursos
-                            where cur.Id == id
-                            select cur;
-                return View(curso.SingleOrDefault());
-            }
+            if (string.IsNullOrEmpty(id))
+                return Content("No encontramos el Curso solicitado.");
+
             else
-            {
-                return View("MultiCurso", _context.Cursos);
-            }
+                return View(GetCourse(id));
         }
+
         #endregion
 
-        #region MultiCurso
-        [Route("Curso/Multicurso")]
+        #region Multicurso
 
         public IActionResult MultiCurso()
         {
-            ViewBag.CosaDinamica = "La Monja";
-            ViewBag.Fecha = DateTime.Now;
-
-            return View("MultiCurso", _context.Cursos);
+            return View("Multicurso", mescContexto.Cursos);
         }
+
         #endregion
-        
-        #region Create
-        [Route("Curso/Create")]
+
+        #region Crear
+
         public IActionResult Create()
         {
-            ViewBag.Fecha = DateTime.Now;
-
             return View();
         }
 
         [HttpPost]
-        [Route("Curso/Create")]
-        public IActionResult Create(Curso curso)
+        public IActionResult Create(Curso pCurso)
         {
-            ViewBag.Fecha = DateTime.Now;
             if (ModelState.IsValid)
-            {
-                var escuela = _context.Escuelas.FirstOrDefault();
-
-                curso.EscuelaId = escuela.Id;
-                _context.Cursos.Add(curso);
-                _context.SaveChanges();
-                ViewBag.MensajeExra = "Curso Creado";
-                return View("Index", curso);
-            }
+                return SaveCourse(3, pCurso, Guid.NewGuid().ToString());
             else
-            {
-                return View(curso);
-            }
+                return View(pCurso);
         }
+
         #endregion
 
-        #region Edit
+        #region Editar
         [Route("Curso/Edit/{id}")]
         public IActionResult Edit(string id)
         {
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                var curso = from cur in _context.Cursos
-                            where cur.Id == id
-                            select cur;
+            if (string.IsNullOrEmpty(id))
+                return Content("Los datos proporcionados no son suficientes.");
 
-                return View(curso.SingleOrDefault());
-            }
             else
-            {
-                return View("MultiCurso", _context.Cursos);
-            }
+                return GetViewCurso("Edit", GetCourse(id));
+        }
+
+        //[HttpPut("{id}")]
+        [HttpPost]
+        [Route("Curso/Edit/{id}")]
+        public IActionResult Edit(Curso pCurso, string id)
+        {
+            if (ModelState.IsValid)
+                return SaveCourse(1, pCurso, id);
+
+            else
+                return View(pCurso);
+        }
+
+        #endregion
+
+        #region Eliminar
+
+        [Route("Curso/Delete/{id}")]
+        public IActionResult Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return Content("Los datos proporcionados no son suficientes.");
+
+            else
+                return GetViewCurso("Delete", GetCourse(id));
         }
 
         [HttpPost]
-        [Route("Curso/Edit/{id}")]
-        public IActionResult Edit(Curso curso)
+        [Route("Curso/Delete/{id}")]
+        public IActionResult Delete(Curso pCurso, string id)
         {
             if (ModelState.IsValid)
-            {
-                ViewBag.MensajeExra = "Curso Modificado";
-                return View("Index", curso);
-            }
+                return SaveCourse(2, pCurso, id);
+
             else
-            {
-                return View(curso);
-            }
+                return MultiCurso();
         }
+
         #endregion
 
-        private EscuelaContext _context;
-        public CursoController(EscuelaContext context)
+        #endregion
+
+        #region Métodos privados
+
+        private IActionResult GetViewCurso(string pAccion, Curso pCurso)
         {
-            _context = context;
+            bool cursoEsNull = CursoIsNull(pCurso);
+            if (cursoEsNull)
+                return Content("Curso no encontrado.");
+
+            else
+                return View(pAccion, pCurso);
         }
+
+        private bool CursoIsNull(Curso pCurso)
+        {
+            return pCurso == null;
+        }
+
+        private Curso GetCourse(string pCursoId)
+        {
+            var cursosResults = from curso in mescContexto.Cursos
+                                where curso.Id == pCursoId
+                                select curso;
+
+            return cursosResults.SingleOrDefault();
+        }
+
+        private IActionResult SaveCourse(short pTipoManage, Curso pCurso, string pCursoId)
+        {
+            pCurso.Id = pCursoId;
+            ManageCourseDataBase(pTipoManage, pCurso);
+            mescContexto.SaveChanges();
+            return View("Multicurso", mescContexto.Cursos);
+        }
+
+        private void ManageCourseDataBase(short pTipoManage, Curso pCurso)
+        {
+            switch (pTipoManage)
+            {
+                case 1:
+                    mescContexto.Cursos.Update(pCurso);
+                    break;
+                case 2:
+                    mescContexto.Cursos.Remove(pCurso);
+                    break;
+                case 3:
+                    pCurso.EscuelaId = mescContexto.Escuelas.FirstOrDefault().Id;
+                    mescContexto.Cursos.Add(pCurso);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
+
     }
 }
