@@ -87,6 +87,21 @@ namespace platzi_asp_net_core.Controllers
                 return View("MultiCurso", _context.Cursos);
             }
         }
+
+        [HttpPost]
+        [Route("Curso/Edit/{id}")]
+        public IActionResult Edit(Curso curso)
+        {
+            if (ModelState.IsValid)
+            {
+                ViewBag.MensajeExra = "Curso Modificado";
+                return View("Index", curso);
+            }
+            else
+            {
+                return View(curso);
+            }
+        }
         #endregion
 
         private EscuelaContext _context;
