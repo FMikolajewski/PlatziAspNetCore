@@ -45,8 +45,6 @@ namespace platzi_asp_net_core
             services.AddDbContext<EscuelaContext>(
                 options => options.UseSqlServer(connString)
             );
-
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
