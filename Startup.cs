@@ -40,8 +40,7 @@ namespace platzi_asp_net_core
             //     options => options.UseInMemoryDatabase(databaseName:"testDB" )
             // );
 
-            string connString = ConfigurationExtensions
-                                    .GetConnectionString(this.Configuration,"defaultConnection")
+            string connString = ConfigurationExtensions.GetConnectionString(this.Configuration,"defaultConnection");
             
             services.AddDbContext<EscuelaContext>(
                 options => options.UseSqlServer(connString)
