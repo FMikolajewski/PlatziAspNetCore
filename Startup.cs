@@ -40,11 +40,14 @@ namespace platzi_asp_net_core
             //     options => options.UseInMemoryDatabase(databaseName:"testDB" )
             // );
 
-            string connString = ConfigurationExtensions.GetConnectionString(this.Configuration,"defaultConnection");
+            string connString = ConfigurationExtensions.GetConnectionString(this.Configuration,"DefaultConnectionString");
             
             services.AddDbContext<EscuelaContext>(
                 options => options.UseSqlServer(connString)
             );
+
+            // Azure, connectionstring 
+            // Server=tcp:platzi-server.database.windows.net,1433;Initial Catalog=platzi-basededatos;Persist Security Info=False;User ID=administrador;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
